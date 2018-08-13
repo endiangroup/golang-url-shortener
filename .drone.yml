@@ -17,11 +17,6 @@ pipeline:
     commands:
       - make test
 
-  build:
-    image: golang:latest
-    commands:
-      - make build
-
   build-staging:
     image: golang:latest
     commands:
