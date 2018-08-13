@@ -8,8 +8,8 @@ EnableColorLogs: true
 ShortedIDLength: 10
 AuthBackend: oauth
 Google:
-  ClientID: replace me
-  ClientSecret: replace me
+  ClientID: $GOOGLE_CLIENTID
+  ClientSecret: $GOOGLE_SECRET
 Redis:
   Host: $REDIS_URL
   Password: $REDIS_PASSWORD
