@@ -16,9 +16,10 @@ getCMDDependencies:
 	go get -v github.com/mattn/goveralls
 	go get -v github.com/mjibson/esc
 	go get -v github.com/mitchellh/gox
+	go get -v github.com/golang/dep/cmd/dep
 
 getGoDependencies:
-	go get -v ./...
+	dep ensure -v
 
 buildProject:
 	rm -rf releases 
