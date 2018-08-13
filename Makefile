@@ -4,8 +4,8 @@ runUnitTests:
 	go test -v ./...
 
 buildNodeFrontend:
-	cd web && yarn install
-	cd web && yarn build
+	cd web && npm ci
+	cd web && npm run build
 	cd web && rm build/static/**/*.map
 
 embedFrontend:

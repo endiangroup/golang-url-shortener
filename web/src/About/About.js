@@ -53,8 +53,8 @@ export default class AboutComponent extends Component {
                             <Table.Cell>{info.nodeJS}</Table.Cell>
                         </Table.Row>
                         <Table.Row>
-                            <Table.Cell>Yarn Version</Table.Cell>
-                            <Table.Cell>{info.yarn}</Table.Cell>
+                            <Table.Cell>Npm Version</Table.Cell>
+                            <Table.Cell>{info.npm}</Table.Cell>
                         </Table.Row>
                         <Table.Row>
                             <Table.Cell>License</Table.Cell>
