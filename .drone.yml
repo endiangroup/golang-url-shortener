@@ -3,14 +3,21 @@ workspace:
   path: src/github.com/endiangroup/golang-url-shortener
 
 pipeline:
-  build:
+  prepare:
     image: golang:latest
     commands:
       - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
       - . $HOME/.nvm/nvm.sh
       - nvm install stable
       - nvm use stable
-      - make
+      - make prepare
 
-    when:
-      branch: feature/ci
+  test:
+    image: golang:latest
+    commands:
+      - make test
+
+  build:
+    image: golang:latest
+    commands:
+      - make build
