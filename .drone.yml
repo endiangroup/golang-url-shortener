@@ -1,0 +1,11 @@
+pipeline:
+  build:
+    image: golang:latest
+    commands:
+      - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+      - nvm install stable
+      - nvm use stable
+      - make
+
+    when:
+      branch: feature/ci
