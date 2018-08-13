@@ -1,0 +1,19 @@
+ListenAddr: ':80'
+BaseURL: 'http://staging.ndn.sh'
+Backend: redis
+DataDir: ./data
+EnableDebugMode: true
+EnableAccessLogs: true
+EnableColorLogs: true
+ShortedIDLength: 10
+AuthBackend: oauth
+Google:
+  ClientID: replace me
+  ClientSecret: replace me
+Redis:
+  Host: $REDIS_URL
+  Password: $REDIS_PASSWORD
+  Db: 1
+  MaxRetries: 3
+  ReadTimeout: 3s
+  WriteTimeout: 3s
