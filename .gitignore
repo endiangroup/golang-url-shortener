@@ -17,7 +17,7 @@ debug
 debug.test
 
 *.db
-*.lock
+/web/*.lock
 /config.*
 /internal/handlers/static.go
 /internal/handlers/tmpls/tmpls.go
