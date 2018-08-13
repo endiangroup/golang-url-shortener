@@ -8,7 +8,7 @@ RUN apk update && apk add ca-certificates curl
 
 EXPOSE 80
 
-COPY docker_releases/staging/golang-url-shortener_linux_amd64/golang-url-shortener /
+COPY /go/src/github.com/endiangroup/golang-url-shortener/docker_releases/staging/golang-url-shortener_linux_amd64/golang-url-shortener /
 
 VOLUME ["/data"]
 
