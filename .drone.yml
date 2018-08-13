@@ -1,3 +1,7 @@
+workspace:
+  base: /go
+  path: src/github.com/endiangroup/golang-url-shortener
+
 pipeline:
   build:
     image: golang:latest
