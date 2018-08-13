@@ -17,18 +17,19 @@ pipeline:
     commands:
       - make test
 
-  # build:
-  #  image: golang:latest
-  #  commands:
-  #    - make build
+  build:
+    image: golang:latest
+    commands:
+      - make build
 
   build-staging:
     image: golang:latest
     commands:
       - go get -v github.com/mitchellh/gox
-      - apt-get install envsubst
+      - apt-get update && apt-get -y install gettext-base
+      - printenv
       - make buildStaging
-    secrets: [ redis_url, redis_password ]
+    secrets: [ redis_url, google_clientid, google_secret ]
 
   ecr:
     image: plugins/ecr

@@ -12,7 +12,6 @@ Google:
   ClientSecret: $GOOGLE_SECRET
 Redis:
   Host: $REDIS_URL
-  Password: $REDIS_PASSWORD
   Db: 1
   MaxRetries: 3
   ReadTimeout: 3s
