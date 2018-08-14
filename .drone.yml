@@ -31,8 +31,10 @@ pipeline:
     image: joshdvir/drone-ecs-deploy
     cluster: internal
     service: stage_ndn_sh
-    image_name: endian/url-shortener:dev
+    image_name: endian/url-shortener:develop
     aws_region: eu-west-2
+    max: 100
+    min: 50
     when:
       branch: [develop]
 
@@ -42,5 +44,7 @@ pipeline:
     service: ndn_sh
     image_name: endian/url-shortener:latest
     aws_region: eu-west-2
+    max: 100
+    min: 50
     when:
       event: [deployment]
