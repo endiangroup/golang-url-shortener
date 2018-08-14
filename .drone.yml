@@ -24,6 +24,8 @@ pipeline:
     secrets: [ docker_username, docker_password ]
     auto_tag: true
     privileged: true
+    when:
+      branch: [develop,master]
 
   deploy-stage:
     image: joshdvir/drone-ecs-deploy
