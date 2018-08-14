@@ -3,7 +3,7 @@ workspace:
   path: src/github.com/endiangroup/golang-url-shortener
 
 pipeline:
-  prepare:
+  build:
     image: golang:latest
     commands:
       - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
@@ -13,7 +13,7 @@ pipeline:
       - make staging
     secrets: [ redis_url, google_clientid, google_secret ]
 
-  ecr:
+  deploy:
     image: plugins/ecr
     region: eu-west-2
     repo: 189356475589.dkr.ecr.eu-west-2.amazonaws.com/ndn.sh
