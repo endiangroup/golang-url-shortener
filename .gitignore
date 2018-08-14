@@ -16,6 +16,7 @@
 debug
 debug.test
 
+*.env
 *.db
 /web/*.lock
 /config.*
