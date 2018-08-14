@@ -1,10 +1,10 @@
-all: buildNodeFrontend getCMDDependencies embedFrontend getGoDependencies runUnitTests buildProject
+all: build
 
-prepare: buildNodeFrontend getCMDDependencies embedFrontend getGoDependencies
+staging: build buildStaging
+
+build: buildNodeFrontend getCMDDependencies embedFrontend getGoDependencies runUnitTests
 
 test: runUnitTests
-
-build: buildStaging
 
 runUnitTests:
 	go test -v ./...

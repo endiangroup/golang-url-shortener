@@ -8,22 +8,9 @@ pipeline:
     commands:
       - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
       - . $HOME/.nvm/nvm.sh
-      - nvm install stable
-      - nvm use stable
-      - make prepare
-
-  test:
-    image: golang:latest
-    commands:
-      - make test
-
-  build-staging:
-    image: golang:latest
-    commands:
-      - go get -v github.com/mitchellh/gox
+      - nvm install stable && nvm use stable
       - apt-get update && apt-get -y install gettext-base
-      - printenv
-      - make buildStaging
+      - make staging
     secrets: [ redis_url, google_clientid, google_secret ]
 
   ecr:
