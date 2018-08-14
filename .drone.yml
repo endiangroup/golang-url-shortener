@@ -9,12 +9,21 @@ pipeline:
       - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
       - . $HOME/.nvm/nvm.sh
       - nvm install stable && nvm use stable
-      - apt-get update && apt-get -y install gettext-base
-      - make staging
-    secrets: [ redis_url, google_clientid, google_secret ]
+      - make build
 
-  deploy:
-    image: plugins/ecr
-    region: eu-west-2
-    repo: 189356475589.dkr.ecr.eu-west-2.amazonaws.com/ndn.sh
-    registry: 189356475589.dkr.ecr.eu-west-2.amazonaws.com
+  docker:
+    image: kowalatech/drone-docker
+    context: /go/src/github.com/endiangroup/golang-url-shortener
+    repo: endian/url-shortener
+    secrets: [ docker_username, docker_password ]
+    auto_tag: true
+    privileged: true
+
+  deploy-stage:
+    image: joshdvir/drone-ecs-deploy
+    cluster: internal
+    service: stage_ndn_sh
+    image_name: endian/url-shortener:dev
+    aws_region: eu-west-2
+    when:
+      event: [push, tag]
