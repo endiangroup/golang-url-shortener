@@ -3,6 +3,8 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"net/url"
+	"strings"
 
 	"github.com/endiangroup/golang-url-shortener/internal/util"
 	"github.com/pkg/errors"
@@ -11,24 +13,38 @@ import (
 )
 
 type googleAdapter struct {
-	config *oauth2.Config
+	config       *oauth2.Config
+	customParams url.Values
 }
 
 // NewGoogleAdapter creates an oAuth adapter out of the credentials and the baseURL
-func NewGoogleAdapter(clientID, clientSecret string) Adapter {
-	return &googleAdapter{&oauth2.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		RedirectURL:  util.GetConfig().BaseURL + "/api/v1/auth/google/callback",
-		Scopes: []string{
-			"https://www.googleapis.com/auth/userinfo.email",
-		},
-		Endpoint: google.Endpoint,
-	}}
+// TODO: Validate returned JWT contains a 'hd' param that matches the customParams if set
+func NewGoogleAdapter(clientID, clientSecret, customParams string) Adapter {
+	// TODO: Catch error
+	paramValues, _ := url.ParseQuery(customParams)
+
+	return &googleAdapter{
+		customParams: paramValues,
+		config: &oauth2.Config{
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
+			RedirectURL:  util.GetConfig().BaseURL + "/api/v1/auth/google/callback",
+			Scopes: []string{
+				"https://www.googleapis.com/auth/userinfo.email",
+			},
+			Endpoint: google.Endpoint,
+		}}
 }
 
 func (a *googleAdapter) GetRedirectURL(state string) string {
-	return a.config.AuthCodeURL(state)
+	var authCodeOptions []oauth2.AuthCodeOption
+	if len(a.customParams) != 0 {
+		for key, val := range a.customParams {
+			authCodeOptions = append(authCodeOptions, oauth2.SetAuthURLParam(key, strings.Join(val, ",")))
+		}
+	}
+
+	return a.config.AuthCodeURL(state, authCodeOptions...)
 }
 
 func (a *googleAdapter) GetUserData(state, code string) (*user, error) {
