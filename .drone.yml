@@ -26,4 +26,13 @@ pipeline:
     image_name: endian/url-shortener:dev
     aws_region: eu-west-2
     when:
-      event: [push, tag]
+      branch: [develop]
+
+  deploy-prod:
+    image: joshdvir/drone-ecs-deploy
+    cluster: internal
+    service: ndn_sh
+    image_name: endian/url-shortener:latest
+    aws_region: eu-west-2
+    when:
+      event: [deployment]
