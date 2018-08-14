@@ -1,6 +1,12 @@
 workspace:
   base: /go
   path: src/github.com/endiangroup/golang-url-shortener
+  
+clone:
+  git:
+    image: plugins/git:next
+    pull: true
+    tags: true
 
 pipeline:
   build:
