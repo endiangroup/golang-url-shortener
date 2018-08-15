@@ -81,6 +81,10 @@
   name = "gopkg.in/yaml.v2"
   version = "2.2.1"
 
+[[override]]
+  name = "github.com/boj/redistore"
+	branch = "master"
+
 [prune]
   go-tests = true
   unused-packages = true
