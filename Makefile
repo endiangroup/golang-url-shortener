@@ -27,8 +27,25 @@ getGoDependencies:
 
 clean:
 	rm -rf releases 
+	rm -rf data
 	mkdir releases
 	cd web && rm build/static/**/*.map
 
 buildLinux:
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o releases/golang-url-shortener_linux_amd64 ./cmd/golang-url-shortener
+
+buildMac:
+	go build -o releases/golang-url-shortener_darwin_amd64 ./cmd/golang-url-shortener
+
+kill:
+	-@killall -INT golang-url-shortener_darwin_amd64  2>/dev/null || true
+
+restart:
+	@make kill
+	@make buildMac; (if [ "$$?" -eq 0 ]; then (source dev.env; ./releases/golang-url-shortener_darwin_amd64 &); fi)
+
+serve:
+	@command -v fswatch --version >/dev/null 2>&1 || { printf >&2 "fswatch is not installed, please run: brew install fswatch\n"; exit 1; }
+	@make restart 
+	@fswatch -o -e ".*" -i "\\.go$$" --recursive cmd/* internal/* vendor/* | xargs -n1 -I{} make restart || make kill
+

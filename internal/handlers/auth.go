@@ -20,7 +20,7 @@ func (h *Handler) initOAuth() {
 	h.providers = []string{}
 	google := util.GetConfig().Google
 	if google.Enabled() {
-		auth.WithAdapterWrapper(auth.NewGoogleAdapter(google.ClientID, google.ClientSecret), h.engine.Group("/api/v1/auth/google"))
+		auth.WithAdapterWrapper(auth.NewGoogleAdapter(google.ClientID, google.ClientSecret, google.CustomParams), h.engine.Group("/api/v1/auth/google"))
 		h.providers = append(h.providers, "google")
 	}
 	github := util.GetConfig().GitHub

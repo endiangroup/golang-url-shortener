@@ -43,7 +43,8 @@ type redisConf struct {
 type oAuthConf struct {
 	ClientID     string `yaml:"ClientID" env:"CLIENT_ID"`
 	ClientSecret string `yaml:"ClientSecret" env:"CLIENT_SECRET"`
-	EndpointURL  string `yaml:"EndPointURL" env:"ENDPOINT_URL"` // optional for only GitHub
+	EndpointURL  string `yaml:"EndPointURL" env:"ENDPOINT_URL"`   // optional for only GitHub
+	CustomParams string `yaml:"CustomParams" env:"CUSTOM_PARAMS"` // URL encode, decodes with url.ParseQuery
 }
 
 type proxyAuthConf struct {
