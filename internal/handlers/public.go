@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mxschmitt/golang-url-shortener/internal/handlers/auth"
-	"github.com/mxschmitt/golang-url-shortener/internal/stores/shared"
-	"github.com/mxschmitt/golang-url-shortener/internal/util"
+	"github.com/endiangroup/golang-url-shortener/internal/handlers/auth"
+	"github.com/endiangroup/golang-url-shortener/internal/stores/shared"
+	"github.com/endiangroup/golang-url-shortener/internal/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -159,6 +159,12 @@ func (h *Handler) handleInfo(c *gin.Context) {
 		h.providers,
 		strings.Replace(runtime.Version(), "go", "", 1),
 	}
+	c.JSON(http.StatusOK, out)
+}
+
+// handleDisplayURL returns the URL to use for display purposes
+func (h *Handler) handleDisplayURL(c *gin.Context) {
+	out := util.GetConfig().DisplayURL
 	c.JSON(http.StatusOK, out)
 }
 

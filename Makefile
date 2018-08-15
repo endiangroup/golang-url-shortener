@@ -1,11 +1,15 @@
-all: buildNodeFrontend getCMDDependencies embedFrontend getGoDependencies runUnitTests buildProject
+all: build
+
+build: buildNodeFrontend getCMDDependencies embedFrontend getGoDependencies runUnitTests buildLinux
+
+test: runUnitTests
 
 runUnitTests:
 	go test -v ./...
 
 buildNodeFrontend:
-	cd web && yarn install
-	cd web && yarn build
+	cd web && npm ci
+	cd web && npm run build
 	cd web && rm build/static/**/*.map
 
 embedFrontend:
@@ -16,20 +20,32 @@ getCMDDependencies:
 	go get -v github.com/mattn/goveralls
 	go get -v github.com/mjibson/esc
 	go get -v github.com/mitchellh/gox
+	go get -v github.com/golang/dep/cmd/dep
 
 getGoDependencies:
-	go get -v ./...
+	dep ensure -v
 
-buildProject:
+clean:
 	rm -rf releases 
+	rm -rf data
 	mkdir releases
-	gox -output="releases/{{.Dir}}_{{.OS}}_{{.Arch}}/{{.Dir}}" -osarch="linux/amd64 linux/arm windows/amd64 windows/386" -ldflags="-X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagNodeJS=`node --version` -X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagCommit=`git rev-parse HEAD` -X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagYarn=`yarn --version` -X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagCompilationTime=`TZ=UTC date +%Y-%m-%dT%H:%M:%S+0000`" ./cmd/golang-url-shortener
-	find releases -maxdepth 1 -mindepth 1 -type d -exec cp config/example.yaml {}/config.yaml \;
-	find releases -maxdepth 1 -mindepth 1 -type d -exec tar -cvjf {}.tar.bz2 {} \;
+	cd web && rm build/static/**/*.map
 
-buildDockerImage:
-	rm -rf docker_releases 
-	mkdir docker_releases
-	CGO_ENABLED=0 gox -output="docker_releases/{{.Dir}}_{{.OS}}_{{.Arch}}/{{.Dir}}" -osarch="linux/amd64 linux/arm" -ldflags="-X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagNodeJS=`node --version` -X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagCommit=`git rev-parse HEAD` -X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagYarn=`yarn --version` -X github.com/mxschmitt/golang-url-shortener/internal/util.ldFlagCompilationTime=`TZ=UTC date +%Y-%m-%dT%H:%M:%S+0000`" ./cmd/golang-url-shortener
-	docker build -t mxschmitt/golang_url_shortener:arm -f build/Dockerfile.arm .
-	docker build -t mxschmitt/golang_url_shortener -f build/Dockerfile.amd64 .
+buildLinux:
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o releases/golang-url-shortener_linux_amd64 ./cmd/golang-url-shortener
+
+buildMac:
+	go build -o releases/golang-url-shortener_darwin_amd64 ./cmd/golang-url-shortener
+
+kill:
+	-@killall -INT golang-url-shortener_darwin_amd64  2>/dev/null || true
+
+restart:
+	@make kill
+	@make buildMac; (if [ "$$?" -eq 0 ]; then (source dev.env; ./releases/golang-url-shortener_darwin_amd64 &); fi)
+
+serve:
+	@command -v fswatch --version >/dev/null 2>&1 || { printf >&2 "fswatch is not installed, please run: brew install fswatch\n"; exit 1; }
+	@make restart 
+	@fswatch -o -e ".*" -i "\\.go$$" --recursive cmd/* internal/* vendor/* | xargs -n1 -I{} make restart || make kill
+

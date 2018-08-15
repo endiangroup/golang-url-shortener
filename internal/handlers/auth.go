@@ -4,23 +4,31 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/mxschmitt/golang-url-shortener/internal/handlers/auth"
-	"github.com/mxschmitt/golang-url-shortener/internal/util"
+	"github.com/endiangroup/golang-url-shortener/internal/handlers/auth"
+	"github.com/endiangroup/golang-url-shortener/internal/util"
 	"github.com/sirupsen/logrus"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-contrib/sessions/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 )
 
 func (h *Handler) initOAuth() {
-	h.engine.Use(sessions.Sessions("backend", sessions.NewCookieStore(util.GetPrivateKey())))
-
+	switch backend := util.GetConfig().Backend; backend {
+	// use redis as the session store if it is configured
+	case "redis":
+		store, _ := redis.NewStoreWithDB(10, "tcp", util.GetConfig().Redis.Host, util.GetConfig().Redis.Password, util.GetConfig().Redis.SessionDB, util.GetPrivateKey())
+		h.engine.Use(sessions.Sessions("backend", store))
+	default:
+		h.engine.Use(sessions.Sessions("backend", cookie.NewStore(util.GetPrivateKey())))
+	}
 	h.providers = []string{}
 	google := util.GetConfig().Google
 	if google.Enabled() {
-		auth.WithAdapterWrapper(auth.NewGoogleAdapter(google.ClientID, google.ClientSecret), h.engine.Group("/api/v1/auth/google"))
+		auth.WithAdapterWrapper(auth.NewGoogleAdapter(google.ClientID, google.ClientSecret, google.CustomParams), h.engine.Group("/api/v1/auth/google"))
 		h.providers = append(h.providers, "google")
 	}
 	github := util.GetConfig().GitHub
@@ -39,7 +47,14 @@ func (h *Handler) initOAuth() {
 
 // initProxyAuth intializes data structures for proxy authentication mode
 func (h *Handler) initProxyAuth() {
-	h.engine.Use(sessions.Sessions("backend", sessions.NewCookieStore(util.GetPrivateKey())))
+	switch backend := util.GetConfig().Backend; backend {
+	// use redis as the session store if it is configured
+	case "redis":
+		store, _ := redis.NewStoreWithDB(10, "tcp", util.GetConfig().Redis.Host, util.GetConfig().Redis.Password, util.GetConfig().Redis.SessionDB, util.GetPrivateKey())
+		h.engine.Use(sessions.Sessions("backend", store))
+	default:
+		h.engine.Use(sessions.Sessions("backend", cookie.NewStore(util.GetPrivateKey())))
+	}
 	h.providers = []string{}
 	h.providers = append(h.providers, "proxy")
 	h.engine.POST("/api/v1/auth/check", h.handleAuthCheck)

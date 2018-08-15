@@ -1,0 +1,50 @@
+workspace:
+  base: /go
+  path: src/github.com/endiangroup/golang-url-shortener
+  
+clone:
+  git:
+    image: plugins/git:next
+    pull: true
+    tags: true
+
+pipeline:
+  build:
+    image: golang:latest
+    commands:
+      - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+      - . $HOME/.nvm/nvm.sh
+      - nvm install stable && nvm use stable
+      - make build
+
+  docker:
+    image: kowalatech/drone-docker
+    context: /go/src/github.com/endiangroup/golang-url-shortener
+    repo: endian/url-shortener
+    secrets: [ docker_username, docker_password ]
+    auto_tag: true
+    privileged: true
+    when:
+      branch: [develop,master]
+
+  deploy-stage:
+    image: joshdvir/drone-ecs-deploy
+    cluster: internal
+    service: stage_ndn_sh
+    image_name: endian/url-shortener:develop
+    aws_region: eu-west-2
+    max: 100
+    min: 50
+    when:
+      branch: [develop]
+
+  deploy-prod:
+    image: joshdvir/drone-ecs-deploy
+    cluster: internal
+    service: ndn_sh
+    image_name: endian/url-shortener:latest
+    aws_region: eu-west-2
+    max: 100
+    min: 50
+    when:
+      event: [deployment]

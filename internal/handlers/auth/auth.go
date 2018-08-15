@@ -8,9 +8,9 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/mxschmitt/golang-url-shortener/internal/util"
+	"github.com/endiangroup/golang-url-shortener/internal/util"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
