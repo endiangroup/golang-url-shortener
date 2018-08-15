@@ -16,6 +16,7 @@ import (
 type Configuration struct {
 	ListenAddr       string        `yaml:"ListenAddr" env:"LISTEN_ADDR"`
 	BaseURL          string        `yaml:"BaseURL" env:"BASE_URL"`
+	DisplayURL       string        `yaml:"DisplayURL" env:"DISPLAY_URL"`
 	DataDir          string        `yaml:"DataDir" env:"DATA_DIR"`
 	Backend          string        `yaml:"Backend" env:"BACKEND"`
 	AuthBackend      string        `yaml:"AuthBackend" env:"AUTH_BACKEND"`
@@ -38,6 +39,8 @@ type redisConf struct {
 	MaxRetries   int    `yaml:"MaxRetries" env:"MAX_RETRIES"`
 	ReadTimeout  string `yaml:"ReadTimeout" env:"READ_TIMEOUT"`
 	WriteTimeout string `yaml:"WriteTimeout" env:"WRITE_TIMEOUT"`
+	SessionDB    string `yaml:"SessionDB" env:"SESSION_DB"`
+	SharedKey    string `yaml:"SharedKey" env:"SHARED_KEY"`
 }
 
 type oAuthConf struct {
@@ -53,10 +56,11 @@ type proxyAuthConf struct {
 	DisplayNameHeader string `yaml:"DisplayNameHeader" env:"DISPLAY_NAME_HEADER"`
 }
 
-// config contains the default values
+// Config contains the default values
 var Config = Configuration{
 	ListenAddr:       ":8080",
 	BaseURL:          "http://localhost:3000",
+	DisplayURL:       "",
 	DataDir:          "data",
 	Backend:          "boltdb",
 	EnableDebugMode:  false,
@@ -70,6 +74,8 @@ var Config = Configuration{
 		MaxRetries:   3,
 		ReadTimeout:  "3s",
 		WriteTimeout: "3s",
+		SessionDB:    "1",
+		SharedKey:    "secret",
 	},
 }
 
@@ -107,6 +113,11 @@ func (o oAuthConf) Enabled() bool {
 
 // GetConfig returns the configuration from the memory
 func GetConfig() Configuration {
+	// if DisplayURL is not set in the config, default to BaseURL
+	if Config.DisplayURL == "" {
+		Config.DisplayURL = Config.BaseURL
+	}
+
 	return Config
 }
 
