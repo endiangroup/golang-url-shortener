@@ -4,9 +4,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/endiangroup/golang-url-shortener/internal/handlers"
-	"github.com/endiangroup/golang-url-shortener/internal/stores"
-	"github.com/endiangroup/golang-url-shortener/internal/util"
+	"github.com/endiangroup/url-shortener/internal/handlers"
+	"github.com/endiangroup/url-shortener/internal/stores"
+	"github.com/endiangroup/url-shortener/internal/util"
 	"github.com/pkg/errors"
 	"github.com/shiena/ansicolor"
 	"github.com/sirupsen/logrus"

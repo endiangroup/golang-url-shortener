@@ -1,6 +1,6 @@
 workspace:
   base: /go
-  path: src/github.com/endiangroup/golang-url-shortener
+  path: src/github.com/endiangroup/url-shortener
   
 clone:
   git:
@@ -19,7 +19,7 @@ pipeline:
 
   docker:
     image: kowalatech/drone-docker
-    context: /go/src/github.com/endiangroup/golang-url-shortener
+    context: /go/src/github.com/endiangroup/url-shortener
     repo: endian/url-shortener
     secrets: [ docker_username, docker_password ]
     auto_tag: true

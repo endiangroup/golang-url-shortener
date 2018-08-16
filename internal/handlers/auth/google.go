@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/endiangroup/golang-url-shortener/internal/util"
+	"github.com/endiangroup/url-shortener/internal/util"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
