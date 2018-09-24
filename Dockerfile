@@ -1,7 +1,7 @@
 FROM alpine
 
 LABEL maintainer="Adrian Duke <adrian@endian.io>"
-LABEL readme.md="https://github.com/endiangroup/golang-url-shortener/blob/master/README.md"
+LABEL readme.md="https://github.com/endiangroup/url-shortener/blob/master/README.md"
 LABEL description="This Dockerfile will install the Golang URL Shortener."
 
 RUN apk update && apk add ca-certificates curl

@@ -7,7 +7,7 @@ import (
 
 	"golang.org/x/oauth2/microsoft"
 
-	"github.com/endiangroup/golang-url-shortener/internal/util"
+	"github.com/endiangroup/url-shortener/internal/util"
 	"github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/boltdb/bolt"
-	"github.com/endiangroup/golang-url-shortener/internal/stores/shared"
+	"github.com/endiangroup/url-shortener/internal/stores/shared"
 	"github.com/pkg/errors"
 )
 

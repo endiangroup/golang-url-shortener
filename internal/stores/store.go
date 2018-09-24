@@ -12,10 +12,10 @@ import (
 	"unicode"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/endiangroup/golang-url-shortener/internal/stores/boltdb"
-	"github.com/endiangroup/golang-url-shortener/internal/stores/redis"
-	"github.com/endiangroup/golang-url-shortener/internal/stores/shared"
-	"github.com/endiangroup/golang-url-shortener/internal/util"
+	"github.com/endiangroup/url-shortener/internal/stores/boltdb"
+	"github.com/endiangroup/url-shortener/internal/stores/redis"
+	"github.com/endiangroup/url-shortener/internal/stores/shared"
+	"github.com/endiangroup/url-shortener/internal/util"
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -74,10 +74,9 @@ func (s *Store) GetEntryByID(id string) (*shared.Entry, error) {
 func (s *Store) GetEntryAndIncrease(id string) (*shared.Entry, error) {
 	entry, err := s.GetEntryByID(id)
 	if err != nil {
-		errors.Wrap(err, "could not fetch entry "+id)
-		return nil, err
+		return nil, errors.Wrap(err, "could not fetch entry "+id)
 	}
-	if entry.Public.Expiration != nil && time.Now().After(*entry.Public.Expiration) {
+	if entry.Public.Expiration != nil && !entry.Public.Expiration.IsZero() && time.Now().After(*entry.Public.Expiration) {
 		return nil, ErrEntryIsExpired
 	}
 	if err := s.storage.IncreaseVisitCounter(id); err != nil {

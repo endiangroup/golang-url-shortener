@@ -9,9 +9,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/endiangroup/golang-url-shortener/internal/handlers/tmpls"
-	"github.com/endiangroup/golang-url-shortener/internal/stores"
-	"github.com/endiangroup/golang-url-shortener/internal/util"
+	"github.com/endiangroup/url-shortener/internal/handlers/tmpls"
+	"github.com/endiangroup/url-shortener/internal/stores"
+	"github.com/endiangroup/url-shortener/internal/util"
 	"github.com/pkg/errors"
 )
 
@@ -161,9 +161,9 @@ func (h *Handler) setHandlers() error {
 	protected.POST("/visitors", h.handleGetVisitors)
 
 	h.engine.GET("/api/v1/info", h.handleInfo)
+	h.engine.GET("/api/v1/displayURL", h.handleDisplayURL)
 	h.engine.GET("/d/:id/:hash", h.handleDelete)
 	h.engine.GET("/ok", h.handleHealthcheck)
-	h.engine.GET("/displayurl", h.handleDisplayURL)
 
 	// Handling the shorted URLs, if no one exists, it checks
 	// in the filesystem and sets headers for caching

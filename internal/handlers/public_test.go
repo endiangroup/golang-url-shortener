@@ -11,8 +11,8 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/endiangroup/golang-url-shortener/internal/stores"
-	"github.com/endiangroup/golang-url-shortener/internal/stores/shared"
+	"github.com/endiangroup/url-shortener/internal/stores"
+	"github.com/endiangroup/url-shortener/internal/stores/shared"
 )
 
 const testURL = "https://www.google.de/"
